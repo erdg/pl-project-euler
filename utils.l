@@ -300,6 +300,14 @@
             (link (setq C (digit-factorial-sum C)))
             (T (member C (head -1 (made))) (made (head -1 (made)))) ) ) ) )  # - done if we hit any N again
 
+(de power-digit-sum? (N)
+   (let [I 1  S (apply + (mapcar any (chop N)))]
+      (loop
+         (inc 'I)
+         (T (=1 S) NIL)
+         (T (= (** S I) N) N)
+         (T (> (** S I) N) NIL) ) ) )
+
 (de nthcar (Lst N)
    (car (nth Lst N)) )
 
