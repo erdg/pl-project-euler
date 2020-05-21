@@ -282,6 +282,24 @@
          (mapcar '((X) (any (pack X)))
             (permute (chop N)) ) ) ) )
 
+(de factorial (N)
+   (if (=0 N)
+      1
+      (* N (factorial (dec N))) ) )
+
+(de digit-factorial-sum (N)
+   (apply +
+      (mapcar '((X) (factorial (any (pack X))))
+         (chop N) ) ) )
+
+(de digit-factorial-chain (N)
+   (let C N
+      (make
+         (link C)
+         (loop
+            (link (setq C (digit-factorial-sum C)))
+            (T (member C (head -1 (made))) (made (head -1 (made)))) ) ) ) )  # - done if we hit any N again
+
 (de nthcar (Lst N)
    (car (nth Lst N)) )
 
