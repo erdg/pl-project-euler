@@ -157,11 +157,28 @@
 (de sumPropDiv (N)
    (sum + (propDiv N)) )
 
+(de perfect-number? (N)
+   (= N (sumPropDiv N)) )
+
 (de amicable? (N)
    (let S (sumPropDiv N)
       (and 
          (not (= N S))
          (= N (sumPropDiv S)) ) ) )
+
+(de make-amicable-chain (N)
+   (let C N
+      (make
+         (link C)
+         (loop
+            (link (setq C (sumPropDiv C)))
+            (T (= C N))                   # - it's a chain if we reach N again
+            (T (> C 1000000) (made NIL))  # - no numbers higher than 1,000,000
+            (T (= C 0) (made NIL))        # - bottoms out
+            (T                            # - guard against getting stuck in an amicable chain that 
+               (member C                  #   doesn't include the starting number
+                  (cdr (head -1 (made))) )
+               (made NIL) ) ) ) ) )
 
 # pandigital
 (de pan? (N)
@@ -223,7 +240,7 @@
                N ) ) )
       X2 ) )
 
-(de scaled-interger? (N)
+(de scaled-integer? (N)
    (fully '((N) (=0 N))
       (tail 6 (mapcar any (chop N))) ) )
 
@@ -257,17 +274,10 @@
       Ds ) )
 
 (de permute-integer (N)
-   (uniq 
-      (mapcar '((X) (any (pack X)))
-         (permute (chop N)) ) ) )
+   (filter '((A) (= (length A) (length N)))
+      (uniq 
+         (mapcar '((X) (any (pack X)))
+            (permute (chop N)) ) ) ) )
 
 (de abundant? (N)
    (> (sumPropDiv N) N) )
-
-# recursive 'sect'
-# FIXME - this is a dumb name
-(de resect (Lst)
-   (let Sect '()
-      (while (cdr Lst)
-         (setq Sect (sect (cadr Lst) (pop 'Lst))) )
-      Sect ) )
