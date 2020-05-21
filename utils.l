@@ -157,6 +157,9 @@
 (de sumPropDiv (N)
    (sum + (propDiv N)) )
 
+(de abundant? (N)
+   (> (sumPropDiv N) N) )
+
 (de perfect-number? (N)
    (= N (sumPropDiv N)) )
 
@@ -279,5 +282,10 @@
          (mapcar '((X) (any (pack X)))
             (permute (chop N)) ) ) ) )
 
-(de abundant? (N)
-   (> (sumPropDiv N) N) )
+(de nthcar (Lst N)
+   (car (nth Lst N)) )
+
+(de nthcars (Lst Ns)
+   (make
+      (for N Ns
+         (link (nthcar Lst N)) ) ) )
