@@ -12,14 +12,14 @@
       N ) )
 
 # fibonacci
-(de fib (N) 
+(de fib (N)
    (cache '(NIL) N
       (if (>= 2 N)
          1
          (+ (fib (dec N)) (fib (- N 2))) ) ) )
 
 (de collatz (N)
-   (make 
+   (make
       (link N)
       (recur (N)
          (if (=1 N)
@@ -36,19 +36,6 @@
          (if (even? N)
             (setq N (/ N 2))
             (setq N (+ (* 3 N) 1)) ) ) ) )
-      
-
-(de collatz-cache (N)
-   (cache '(NIL) N
-      (collatz N) ) )
-
-(de next-collatz (N)
-   (cache '(NIL) N
-      (if (=1 N)
-         1
-         (if (even? N)
-            (/ N 2)
-            (+ (* 3 N) 1) ) ) ) )
 
 # prime factors
 (de factor (N)
@@ -122,16 +109,16 @@
       N ) )
 
 (de factors (N)
-   (filter 
+   (filter
       '((D) (=0 (% N D)))
       (range 1 N) ) )
 
 # much faster than (length (factors N))
 (de number-of-factors (N)
-   (let 
+   (let
       PrimeFactors # <- e.g. (("2" "2" "2") ("3"))
       (by name group (mapcar pack (prime-factors N)))
-      (apply * 
+      (apply *
          (mapcar '((Lst) (+ (length Lst) 1))
             PrimeFactors ) ) ) )
 
@@ -147,7 +134,7 @@
    (* N (- (* 2 N) 1)) )
 
 # proper divisors
-(de propDiv (N)  
+(de propDiv (N)
    (make
       (for X (/ N 2)
          (when (=0 (% N X))
@@ -165,7 +152,7 @@
 
 (de amicable? (N)
    (let S (sumPropDiv N)
-      (and 
+      (and
          (not (= N S))
          (= N (sumPropDiv S)) ) ) )
 
@@ -178,14 +165,14 @@
             (T (= C N))                   # - it's a chain if we reach N again
             (T (> C 1000000) (made NIL))  # - no numbers higher than 1,000,000
             (T (= C 0) (made NIL))        # - bottoms out
-            (T                            # - guard against getting stuck in an amicable chain that 
+            (T                            # - guard against getting stuck in an amicable chain that
                (member C                  #   doesn't include the starting number
                   (cdr (head -1 (made))) )
                (made NIL) ) ) ) ) )
 
 # pandigital
 (de pan? (N)
-   (= 
+   (=
       (sort (mapcar any (chop N)) <)
       (range 1 (length N)) ) )
 
@@ -218,8 +205,8 @@
          (fully '((X) (=T X))
             (make
                (for I (range (- (length C) 1) 1)
-                  (link 
-                     (prime? 
+                  (link
+                     (prime?
                         (any (pack (head I C))) ) ) ) ) )
          (fully '((X) (=T X))
             (make
@@ -248,13 +235,13 @@
       (tail 6 (mapcar any (chop N))) ) )
 
 (de perfect-cube? (N)
-   (let 
+   (let
       Fs
       (mapcar
          '((L) (mapcar any L))
-         (by name group 
+         (by name group
             (mapcar pack (prime-factors N)) ) )
-      (fully 
+      (fully
          '((L) (=0 (% (length L) 3)))
          Fs ) ) )
 
@@ -269,16 +256,16 @@
 (de digital-root (N)
    (let Ds (mapcar any (chop N))
       (until (=1 (length Ds))
-         (setq Ds 
+         (setq Ds
             (apply +
                (if (pair Ds)
                   Ds
                   (mapcar any (chop Ds)) ) ) ) )
-      Ds ) )
+      (if (pair Ds) (car @) Ds) ) )
 
 (de permute-integer (N)
    (filter '((A) (= (length A) (length N)))
-      (uniq 
+      (uniq
          (mapcar '((X) (any (pack X)))
             (permute (chop N)) ) ) ) )
 
