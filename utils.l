@@ -61,33 +61,31 @@
                (inc 'D (pop 'L)) ) )
          (link N) ) ) )
 
-
-# least common multiple
-# https://en.m.wikipedia.org/wiki/Least_common_multiple
-# - calculation
-# --- using prime factorization
-# FIXME - this is fucked! It gives the right answer for some
-# numbers and wrong answer for others. what a waste of a couple
-# hours!
-(de lcm% Nums
-   (and 
-      (make  # list of prime factors for each number
-         (for N Nums  # grouped by common factors
-            (link  # <- e.g. (("2" "2" "2") ("3" "3") ("7"))
-               (by name group 
-                  (mapcar pack (prime-factors N)) ) ) ) )
-      (make  # get highest power for each number
-         (for Lst @
-            (if (sublists-same-length? Lst)
-               (link (last Lst))
-               (link 
-                  (find
-                     '((L1 L2) (> (length L1) (length L2)))
-                     Lst ) ) ) ) )
-      #(fish atom @)
-      (mapcar '((L) (mapcar any L)) @)
-      (mapcar '((L) (apply * L)) @)
-      (apply * @) ) )
+###
+# from p159 - digital root sums of factorisations
+(de count-unique-factorizations (N)
+   (if (prime? N)
+      1
+      (let [Ps (prime-factors N)
+            Fs (_collapse Ps)  # unique factorizations
+            C  1 ]  # count
+         (recur (Fs)
+            (if (fully '((L) (= (length L) 1)) Fs)
+               (inc 'C)
+               (inc 'C (length Fs))
+               (recurse (uniq (mapcar sort (mapcan _collapse Fs)))) ) ) ) ) )
+# FIXME - this works for one number at a time, but stalls when used in a for loop
+(de _collapse (Lst)
+   (let R (ring-from-list Lst)
+      (uniq
+         (mapcar sort
+            (make
+               (do (length Lst)
+                  (link
+                     (cons
+                        (* (pop 'R) (car R))
+                        (head (- (length Lst) 2) (cdr R)))) ) ) ) ) ) )
+###
 
 (de sublists-same-length? (Lst)
    (let Len (length (car Lst))
@@ -302,3 +300,6 @@
    (make
       (for N Ns
          (link (nthcar Lst N)) ) ) )
+
+(de ring-from-list (Lst)
+   (macro (circ ^ Lst) ) )
